@@ -1,0 +1,80 @@
+@keyframes drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(14vmax, 10vmax, 0) scale(1.15); }
+}
+@keyframes drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1.1); }
+  to   { transform: translate3d(-16vmax, -8vmax, 0) scale(0.95); }
+}
+@keyframes drift-c {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(12vmax, -12vmax, 0) scale(1.2); }
+}
+
+@keyframes zero-pulse {
+  0%   { width: 16px; margin-left: -8px; background: rgba(255, 255, 255, 0.5); }
+  30%  { width: 34px; margin-left: -17px; background: rgba(255, 255, 255, 0.95); }
+  100% { width: 16px; margin-left: -8px; background: rgba(255, 255, 255, 0.5); }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Staggered entrance for the content of each screen. */
+.rise {
+  animation: rise 0.9s var(--ease) both;
+}
+.stack > .rise,
+.stack > *,
+.result-col > * {
+  animation: rise 0.9s var(--ease) both;
+}
+.stack > :nth-child(2), .result-col > :nth-child(2) { animation-delay: 0.06s; }
+.stack > :nth-child(3), .result-col > :nth-child(3) { animation-delay: 0.12s; }
+.stack > :nth-child(4), .result-col > :nth-child(4) { animation-delay: 0.18s; }
+.stack > :nth-child(5), .result-col > :nth-child(5) { animation-delay: 0.24s; }
+.stack > :nth-child(6), .result-col > :nth-child(6) { animation-delay: 0.3s; }
+.step-copy { animation-delay: 0.08s; }
+.step-hint { animation-delay: 0.3s; }
+
+/* Screen transitions: fade plus a slight vertical move. */
+.screen.is-entering {
+  opacity: 0;
+}
+.screen.is-entering.from-below { transform: translateY(28px); }
+.screen.is-entering.from-above { transform: translateY(-28px); }
+.screen.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+  transition-duration: 0.45s;
+}
+.screen.is-leaving.to-above { transform: translateY(-28px); }
+.screen.is-leaving.to-below { transform: translateY(28px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .blob {
+    animation: none;
+  }
+  .rise,
+  .stack > *,
+  .result-col > * {
+    animation: none;
+  }
+  .screen,
+  .screen.is-entering,
+  .screen.is-leaving {
+    transform: none !important;
+    transition: opacity 0.2s linear;
+  }
+  .slider.is-snap .zero {
+    animation: none;
+  }
+  .dot.is-on {
+    transform: none;
+  }
+  :root {
+    transition: none;
+  }
+}

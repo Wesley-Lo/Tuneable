@@ -1,0 +1,147 @@
+/* The slider zone fills the space between the question and the hint. */
+.slider-zone {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 0;
+  padding-block: clamp(34px, 6vh, 56px) clamp(12px, 3vh, 28px);
+}
+
+.slider {
+  --touch: 0;
+  --n: 0;
+  position: relative;
+  width: 64px;
+  height: 100%;
+  max-height: 460px;
+  min-height: 150px;
+  border-radius: 999px;
+  /* Barely there until touched. */
+  opacity: calc(0.5 + var(--touch) * 0.5);
+  transform: scale(calc(1 + var(--touch) * 0.045));
+  will-change: transform, opacity;
+}
+.slider:focus-visible {
+  outline-offset: 10px;
+  border-radius: 999px;
+}
+
+/* Soft glow behind the pill. Only its opacity animates, which stays on the compositor. */
+.slider::before {
+  content: '';
+  position: absolute;
+  inset: -26px;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, hsl(var(--hue) 85% 66% / 0.5), transparent);
+  opacity: calc(0.12 + var(--touch) * 0.5);
+  pointer-events: none;
+}
+
+.track {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, calc(0.1 + var(--touch) * 0.14));
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03) 45%, rgba(255, 255, 255, 0.07));
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 18px rgba(255, 255, 255, 0.05),
+    0 24px 50px -22px rgba(0, 0, 0, 0.8);
+}
+/* Specular highlight along the left edge, like light bending through glass. */
+.track::after {
+  content: '';
+  position: absolute;
+  top: 6%;
+  bottom: 6%;
+  left: 9px;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  opacity: calc(0.35 + var(--touch) * 0.4);
+}
+
+.fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  transform: scaleY(0);
+  will-change: transform;
+}
+.fill-up {
+  top: 0;
+  transform-origin: 50% 100%;
+  background: linear-gradient(0deg, hsl(var(--hue) 90% 72% / 0.55), hsl(var(--hue) 90% 80% / 0.2));
+}
+.fill-down {
+  top: 50%;
+  transform-origin: 50% 0;
+  background: linear-gradient(180deg, hsl(var(--hue) 90% 72% / 0.55), hsl(var(--hue) 90% 80% / 0.2));
+}
+
+.zero {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 2px;
+  margin: -1px 0 0 -8px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* The droplet that appears under your finger. */
+.knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 92px;
+  height: 40px;
+  border-radius: 999px;
+  opacity: var(--touch);
+  background:
+    radial-gradient(120% 140% at 30% 0%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.08) 55%),
+    rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  backdrop-filter: blur(10px) saturate(180%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.7),
+    inset 0 -6px 10px rgba(255, 255, 255, 0.08),
+    0 10px 30px -8px hsl(var(--hue) 90% 60% / 0.7);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* The numeric readout only exists on a long press. */
+.readout {
+  position: absolute;
+  left: 50%;
+  top: -40px;
+  transform: translate(-50%, 6px);
+  opacity: 0;
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+  transition:
+    opacity 0.3s var(--ease),
+    transform 0.3s var(--ease);
+  pointer-events: none;
+}
+.readout.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* A small pulse when the finger passes through 0 dB. */
+.slider.is-snap .zero {
+  animation: zero-pulse 0.5s var(--ease);
+}

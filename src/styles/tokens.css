@@ -1,0 +1,40 @@
+/* Registered so the ambient hue and intensity can ease instead of jumping. */
+@property --hue {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 265;
+}
+@property --amp {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+:root {
+  color-scheme: dark;
+
+  --bg: #07080c;
+  --ink: rgba(238, 240, 252, 0.94);
+  --ink-soft: rgba(206, 211, 235, 0.62);
+  --ink-faint: rgba(196, 202, 232, 0.38);
+
+  --glass: rgba(255, 255, 255, 0.055);
+  --glass-strong: rgba(255, 255, 255, 0.1);
+  --glass-edge: rgba(255, 255, 255, 0.13);
+  --glass-edge-strong: rgba(255, 255, 255, 0.28);
+  --glass-shine: rgba(255, 255, 255, 0.34);
+
+  --accent: hsl(var(--hue) 85% 78%);
+
+  --font-ui: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Instrument Serif', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --gutter: max(20px, env(safe-area-inset-left));
+
+  --hue: 265;
+  --amp: 0;
+  transition:
+    --hue 0.35s linear,
+    --amp 0.35s linear;
+}
