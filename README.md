@@ -1,5 +1,7 @@
 # Tuneable
 
+**Live demo: [wesley-lo.github.io/Tuneable](https://wesley-lo.github.io/Tuneable/)**
+
 Tune your headphones by ear. Play some music, drag one big glass slider through five short steps, and get an EQ preset you can export.
 
 Everything runs in the browser. There is no backend, no account, and nothing is uploaded. Music you pick is played from your own device.
