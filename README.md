@@ -8,8 +8,6 @@ Everything runs in the browser. There is no backend, no account, and nothing is 
 |---|---|
 | ![One step: a single frosted glass slider](docs/step.jpg) | ![The final curve with export options](docs/result.jpg) |
 
-> A demo GIF is a good next addition. Record one run through the five steps and drop it in `docs/demo.gif`.
-
 ## Run it
 
 You need Node.js 20 or newer.
@@ -28,17 +26,17 @@ npm run preview
 
 The build uses a relative base path, so `dist/` works on Vercel, Netlify, or a GitHub Pages project site without changes. Routing uses only the URL hash.
 
-### Music
+### Reference track
 
-On the setup screen you either pick a song from the built-in carousel or play a file from your own device. Built-in songs cycle: going past the last one wraps to the first. Files you choose never leave your device.
+The built-in track is "Whisper My Name" by Drake, stored at `public/audio/sample.mp3`. If that file is removed, the app falls back to a short demo track that it generates in the browser.
 
-The built-in songs live in `public/audio/` and are listed in `src/audio/library.ts`. Right now that is "Whisper My Name" by Drake (`sample.mp3`). To add a song, copy the file into `public/audio/` and add one line to the list:
+### NEW: More Reference Tracks
 
-```ts
-{ file: 'my-song.mp3', title: 'Song title', artist: 'Artist name' },
-```
+Now there is two more reference tracks alongside with "Whisper My Name". The goal here is to diversity the music choice to better suit the users typical music style.
 
-If none of the listed files exist, the app falls back to a short demo track that it generates in the browser. See `public/audio/README.txt`.
+### Change the built-in track
+
+Replace `public/audio/sample.mp3` with another MP3 of the same name. See `public/audio/README.txt`.
 
 ## How it works
 
@@ -92,13 +90,12 @@ src/
   audio/
     engine.ts          Web Audio chain, bypass, preamp
     modes.ts           mode configs (Quick Tune now)
+    library.ts         library of preset music
     response.ts        real biquad response, preamp maths
     demo.ts            procedural demo track
-    library.ts         the list of built-in songs
     tracks.ts          built-in or local file
   ui/
     slider.ts          the glass slider
-    carousel.ts        cycling song picker
     curve.ts           the EQ curve graph
     ambient.ts         background glow that follows the slider
     screens/           welcome, setup, step, result
@@ -107,7 +104,7 @@ src/
     share.ts           URL hash encode and decode
     qr.ts              QR code generator
   styles/              tokens, base, glass, screens, slider, animations
-public/audio/          built-in songs (listed in src/audio/library.ts)
+public/audio/          put sample.mp3 here
 ```
 
 ## Design notes
