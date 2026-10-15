@@ -1,7 +1,7 @@
 {
   "name": "tuneable",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tune your headphones by ear with one big glass slider.",
   "type": "module",
   "scripts": {
