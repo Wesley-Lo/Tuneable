@@ -1,5 +1,7 @@
 import type { App, Screen } from '../../app';
 import { h } from '../dom';
+import { siteFooter } from '../footer';
+import { wordmark } from '../wordmark';
 
 export function createWelcomeScreen(app: App): Screen {
   const start = h(
@@ -18,16 +20,17 @@ export function createWelcomeScreen(app: App): Screen {
 
   const el = h(
     'section',
-    { class: 'screen welcome center', 'aria-label': 'Welcome' },
+    { class: 'screen welcome center scroll', 'aria-label': 'Welcome' },
+    wordmark(true),
     h(
       'div',
       { class: 'stack rise' },
-      h('p', { class: 'eyebrow' }, 'Tuneable'),
       h('h1', { class: 'display' }, 'Tune your sound ', h('em', {}, 'by ear.')),
       h('p', { class: 'lede' }, 'Five quick steps, one slider, and a preset you can take anywhere.'),
       start,
       h('p', { class: 'note' }, 'Use headphones. Set your volume to a comfortable level and leave it there.'),
     ),
+    siteFooter(() => app.go({ name: 'credits' })),
   );
 
   return { el };

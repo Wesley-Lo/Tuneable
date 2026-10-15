@@ -1,6 +1,8 @@
 import type { App, Screen } from '../../app';
 import { Carousel } from '../carousel';
 import { h, icon, ICONS } from '../dom';
+import { siteFooter } from '../footer';
+import { wordmark } from '../wordmark';
 
 const NOTICE_KEY = 'tuneable:volume-notice';
 
@@ -333,6 +335,7 @@ export function createSetupScreen(app: App): Screen {
   const el = h(
     'section',
     { class: 'screen setup center scroll', 'aria-label': 'Choose music' },
+    wordmark(),
     h(
       'div',
       { class: 'stack rise' },
@@ -342,6 +345,7 @@ export function createSetupScreen(app: App): Screen {
       notice,
       continueBtn,
     ),
+    siteFooter(() => app.go({ name: 'credits' })),
   );
 
   const unsub = engine.onChange(syncPlay);

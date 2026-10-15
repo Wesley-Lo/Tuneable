@@ -26,17 +26,17 @@ npm run preview
 
 The build uses a relative base path, so `dist/` works on Vercel, Netlify, or a GitHub Pages project site without changes. Routing uses only the URL hash.
 
-### Reference track
+### Music
 
-The built-in track is "Whisper My Name" by Drake, stored at `public/audio/sample.mp3`. If that file is removed, the app falls back to a short demo track that it generates in the browser.
+The setup screen offers three built-in tracks by Kevin MacLeod ([incompetech.com](https://incompetech.com)), all licensed under [Creative Commons: By Attribution 4.0](https://creativecommons.org/licenses/by/4.0/):
 
-### NEW: More Reference Tracks
+- "Funkorama": a grooving bass line and drums, with guitar and organ
+- "Modern Jazz Samba": upright bass, guitar and piano, with a bright flute and rhythm
+- "Cool Rock": a heavy kit and bass with an electric guitar
 
-Now there is two more reference tracks alongside with "Whisper My Name". The goal here is to diversity the music choice to better suit the users typical music style.
+Visitors can also play a file from their own device, which never leaves it. If the built-in files are missing, the app plays a short demo track that it generates in the browser.
 
-### Change the built-in track
-
-Replace `public/audio/sample.mp3` with another MP3 of the same name. See `public/audio/README.txt`.
+To add built-in songs, copy the files into `public/audio/`, then list them in `src/audio/library.ts` with their licence details. The footer shows a short attribution, and a separate Music credits page (linked from the footer) lists each track with its source and licence, both generated from that list. Only add music you have the right to publish: CC0, public domain, CC BY (with credit), your own work, or tracks you have written permission to use. Avoid NonCommercial (NC) and NoDerivatives (ND) licences, because this app applies EQ to the audio and may be monetised later. See `public/audio/README.txt`.
 
 ## How it works
 
@@ -104,7 +104,7 @@ src/
     share.ts           URL hash encode and decode
     qr.ts              QR code generator
   styles/              tokens, base, glass, screens, slider, animations
-public/audio/          put sample.mp3 here
+public/audio/          built-in songs (listed in src/audio/library.ts)
 ```
 
 ## Design notes

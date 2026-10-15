@@ -18,6 +18,8 @@ export interface SliderOptions {
 /** Width of the soft detent around 0 dB, in dB of finger travel. */
 const SNAP = 0.4;
 const LONG_PRESS_MS = 550;
+/** Distance from the pill's ends to the knob's centre at full travel, in px. */
+const KNOB_INSET = 26;
 
 /**
  * The glass slider. It looks like a thin frosted pill, but the whole screen is the
@@ -32,15 +34,16 @@ export class GlassSlider {
   private readout: HTMLElement;
 
   private raw: number; // finger position in dB, before the detent
-  private value: number; // value handed to the app
-  private shown: number; // eased value used for painting
+  private value: number; // where the slider is heading (the target)
+  private shown: number; // eased value used for painting, and what the audio follows
+  private emitted: number; // last value handed to onInput
   private touch = 0;
   private active = false;
   private holdTimer = 0;
   private pulseTimer = 0;
   private pointerId: number | null = null;
-  private startY = 0;
-  private startRaw = 0;
+  private downY = 0;
+  private zipping = false;
   private frame = 0;
   private trackH = 400;
   private travel = 180;
@@ -51,6 +54,7 @@ export class GlassSlider {
     this.value = this.quantize(o.value);
     this.raw = this.unsnap(this.value);
     this.shown = this.value;
+    this.emitted = this.value;
 
     this.fillUp = h('div', { class: 'fill fill-up' });
     this.fillDown = h('div', { class: 'fill fill-down' });
@@ -99,6 +103,8 @@ export class GlassSlider {
     window.removeEventListener('keydown', this.onKey);
     this.ro.disconnect();
     cancelAnimationFrame(this.frame);
+    // If you leave mid-glide, make sure the audio still lands on the final value.
+    if (this.emitted !== this.value) this.o.onInput(this.value);
     window.clearTimeout(this.holdTimer);
     window.clearTimeout(this.pulseTimer);
   }
@@ -133,14 +139,15 @@ export class GlassSlider {
     this.value = next;
     if (crossed) this.detentFeedback();
     this.syncAria();
-    this.o.onInput(next);
     if (this.readout.classList.contains('is-on')) this.updateReadout();
     this.kick();
   }
 
-  /** Programmatic update (no onInput). */
+  /** Programmatic update (no onInput). Jumps straight there. */
   setValue(v: number) {
     this.value = this.quantize(v);
+    this.shown = this.value;
+    this.emitted = this.value;
     this.raw = this.unsnap(this.value);
     this.syncAria();
     this.kick();
@@ -158,9 +165,11 @@ export class GlassSlider {
     } catch {
       /* capture can fail for synthetic events; dragging still works while over the area */
     }
-    this.startY = e.clientY;
-    this.startRaw = this.raw;
+    this.downY = e.clientY;
     this.active = true;
+    // The slider zips to wherever the finger landed, then follows it.
+    this.zipping = true;
+    this.moveTo(e.clientY);
     this.focus();
     window.clearTimeout(this.holdTimer);
     this.holdTimer = window.setTimeout(() => this.showReadout(), LONG_PRESS_MS);
@@ -168,20 +177,30 @@ export class GlassSlider {
     e.preventDefault();
   };
 
+  /**
+   * Maps a pointer height to a value. The knob sits under the finger: the top end of
+   * the pill is the maximum, the bottom end the minimum, the middle is 0 dB. Pressing
+   * above or below the pill (the whole screen is the drag area) clamps to the end.
+   */
+  private moveTo(clientY: number) {
+    const r = this.track.getBoundingClientRect();
+    const half = Math.max(1, r.height / 2 - KNOB_INSET);
+    const mid = r.top + r.height / 2;
+    this.raw = Math.max(-this.span, Math.min(this.span, ((mid - clientY) / half) * this.span));
+    this.commit(this.snap(this.raw));
+  }
+
   private onMove = (e: PointerEvent) => {
     if (e.pointerId !== this.pointerId) return;
-    const dy = this.startY - e.clientY;
-    if (Math.abs(dy) > 8) window.clearTimeout(this.holdTimer);
-    // Dragging about 70% of the pill height covers the whole range.
-    const pxPerDb = (this.trackH * 0.7) / (this.o.max - this.o.min);
-    this.raw = Math.max(-this.span, Math.min(this.span, this.startRaw + dy / pxPerDb));
-    this.commit(this.snap(this.raw));
+    if (Math.abs(e.clientY - this.downY) > 8) window.clearTimeout(this.holdTimer);
+    this.moveTo(e.clientY);
   };
 
   private onUp = (e: PointerEvent) => {
     if (e.pointerId !== this.pointerId) return;
     this.pointerId = null;
     this.active = false;
+    this.zipping = false;
     window.clearTimeout(this.holdTimer);
     this.readout.classList.remove('is-on');
     try {
@@ -276,7 +295,7 @@ export class GlassSlider {
 
   private measure() {
     this.trackH = this.track.getBoundingClientRect().height || this.trackH;
-    this.travel = Math.max(0, this.trackH / 2 - 26);
+    this.travel = Math.max(0, this.trackH / 2 - KNOB_INSET);
     this.paint();
   }
 
@@ -286,9 +305,17 @@ export class GlassSlider {
 
   private tick = () => {
     this.frame = 0;
-    const k = this.reduced ? 1 : 0.2;
+    // Eases toward the target. After the initial zip it follows the finger more tightly.
+    if (this.zipping && Math.abs(this.value - this.shown) < 0.4) this.zipping = false;
+    const k = this.reduced ? 1 : this.active && !this.zipping ? 0.42 : 0.2;
     this.shown += (this.value - this.shown) * k;
     if (Math.abs(this.value - this.shown) < 0.005) this.shown = this.value;
+    // The audio follows the eased position, so a zip is a quick sweep, not a jump.
+    const heard = this.quantize(this.shown);
+    if (heard !== this.emitted) {
+      this.emitted = heard;
+      this.o.onInput(heard);
+    }
     const target = this.active ? 1 : 0;
     this.touch += (target - this.touch) * (this.reduced ? 1 : 0.16);
     if (Math.abs(target - this.touch) < 0.01) this.touch = target;

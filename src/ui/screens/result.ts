@@ -3,6 +3,8 @@ import { apoText, buildExport, listRows, listText } from '../../export/apo';
 import { shareUrl } from '../../export/share';
 import { qrSvg } from '../../export/qr';
 import { CurveView } from '../curve';
+import { siteFooter } from '../footer';
+import { wordmark } from '../wordmark';
 import { copyText, downloadText, flashLabel, h, icon, ICONS } from '../dom';
 
 export function createResultScreen(app: App): Screen {
@@ -83,6 +85,7 @@ export function createResultScreen(app: App): Screen {
   const el = h(
     'section',
     { class: 'screen result scroll', 'aria-label': 'Your result' },
+    wordmark(),
     h(
       'div',
       { class: 'result-col' },
@@ -139,6 +142,7 @@ export function createResultScreen(app: App): Screen {
       ),
 
       h('div', { class: 'again' }, again),
+      siteFooter(() => app.go({ name: 'credits' })),
     ),
   );
 

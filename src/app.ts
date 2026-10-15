@@ -7,7 +7,8 @@ export type Route =
   | { name: 'welcome' }
   | { name: 'setup' }
   | { name: 'step'; index: number }
-  | { name: 'result' };
+  | { name: 'result' }
+  | { name: 'credits' };
 
 export interface Screen {
   el: HTMLElement;
@@ -23,6 +24,8 @@ export interface App {
   tracks: Tracks;
   ambient: Ambient;
   go(route: Route): void;
+  /** Leaves the credits page and returns to the screen you came from. */
+  back(): void;
   /** Loads the built-in track if nothing is loaded yet, then toggles playback. */
   togglePlay(): Promise<void>;
   /** Zero every step and drop any shared preset from the URL. */

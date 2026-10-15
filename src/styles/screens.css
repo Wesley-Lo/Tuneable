@@ -292,3 +292,188 @@
 .curve-area {
   fill: hsl(265 85% 75% / 0.13);
 }
+
+/* ---- wordmark ------------------------------------------------------------ */
+
+.wordmark {
+  position: absolute;
+  top: calc(max(20px, env(safe-area-inset-top)) + 4px);
+  left: var(--gutter);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.wm-mark {
+  width: 20px;
+  height: 20px;
+  color: var(--accent);
+}
+.wm-text {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  line-height: 1;
+  letter-spacing: -0.005em;
+}
+/* On the welcome screen it sits at the top, centred and a little larger. */
+.wordmark.is-centered {
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(max(28px, env(safe-area-inset-top)) + 10px);
+  gap: 10px;
+}
+.wordmark.is-centered .wm-mark {
+  width: 24px;
+  height: 24px;
+}
+.wordmark.is-centered .wm-text {
+  font-size: 1.9rem;
+}
+
+/* Leave room for the wordmark above content that can scroll. */
+.setup,
+.result {
+  padding-top: max(76px, calc(env(safe-area-inset-top) + 60px));
+}
+
+/* ---- footer ---------------------------------------------------------------- */
+
+/* Welcome and setup stack their content, with the footer last. */
+.screen.welcome,
+.screen.setup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.screen.welcome .stack,
+.screen.setup .stack {
+  flex: none;
+}
+
+.site-footer {
+  display: grid;
+  gap: 8px;
+  width: min(100%, 540px);
+  margin: 48px auto 0;
+  padding: 18px 0 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  text-align: center;
+  color: rgba(196, 202, 232, 0.5);
+}
+.site-footer p {
+  text-wrap: pretty;
+}
+.site-footer a {
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.25);
+  text-underline-offset: 3px;
+  transition:
+    color 0.3s var(--ease),
+    text-decoration-color 0.3s var(--ease);
+}
+.site-footer a:hover {
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+}
+
+.site-footer .credits {
+  display: grid;
+  gap: 4px;
+}
+.site-footer .credits > p {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.site-footer ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---- credits page ---------------------------------------------------------- */
+
+.credits {
+  padding-top: max(76px, calc(env(safe-area-inset-top) + 60px));
+  padding-bottom: max(40px, env(safe-area-inset-bottom));
+}
+.credits-col {
+  display: grid;
+  gap: 24px;
+  width: min(100%, 600px);
+  margin-inline: auto;
+}
+.credits-col header {
+  display: grid;
+  gap: 12px;
+}
+.credits-col .lede {
+  max-width: 34em;
+}
+.credits-col .view-head {
+  max-width: none;
+}
+.cr-list {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cr-card {
+  display: grid;
+  gap: 4px;
+  padding: 20px 22px;
+}
+.cr-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.6rem;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.cr-artist {
+  color: var(--ink);
+  font-size: 0.98rem;
+  margin-bottom: 6px;
+}
+.cr-line {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+.credits a,
+.link-btn {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.28);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.3s var(--ease);
+}
+.credits a:hover,
+.link-btn:hover {
+  text-decoration-color: var(--accent);
+}
+.credits .note a {
+  color: var(--ink-soft);
+}
+
+/* A text button that looks like a link, used in the footer. */
+.link-btn {
+  display: inline;
+  padding: 0;
+  font: inherit;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.site-footer .link-btn:hover {
+  color: var(--ink);
+}

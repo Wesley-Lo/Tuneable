@@ -11,6 +11,7 @@ import { encodeHash, decodeHash } from './export/share';
 import { Ambient } from './ui/ambient';
 import { h } from './ui/dom';
 import { prefersReducedMotion } from './ui/dom';
+import { createCreditsScreen } from './ui/screens/credits';
 import { createResultScreen } from './ui/screens/result';
 import { createSetupScreen } from './ui/screens/setup';
 import { createStepScreen } from './ui/screens/step';
@@ -30,10 +31,13 @@ root.append(stage, live);
 
 // ---- routing and transitions -------------------------------------------------
 
-const order = (r: Route) => (r.name === 'welcome' ? 0 : r.name === 'setup' ? 1 : r.name === 'step' ? 2 + r.index : 2 + mode.steps.length);
+const order = (r: Route) =>
+  r.name === 'welcome' ? 0 : r.name === 'setup' ? 1 : r.name === 'step' ? 2 + r.index : r.name === 'result' ? 2 + mode.steps.length : 99;
 
 let currentRoute: Route | null = null;
 let current: Screen | null = null;
+/** Where the credits page returns to. */
+let returnTo: Route = { name: 'welcome' };
 
 function create(route: Route): Screen {
   switch (route.name) {
@@ -45,10 +49,13 @@ function create(route: Route): Screen {
       return createStepScreen(app, route.index);
     case 'result':
       return createResultScreen(app);
+    case 'credits':
+      return createCreditsScreen(app);
   }
 }
 
 function go(route: Route) {
+  if (route.name === 'credits' && currentRoute && currentRoute.name !== 'credits') returnTo = currentRoute;
   const forward = currentRoute ? order(route) >= order(currentRoute) : true;
   const next = create(route);
   const prev = current;
@@ -97,6 +104,9 @@ const app: App = {
   tracks,
   ambient,
   go,
+  back() {
+    go(returnTo);
+  },
   async togglePlay() {
     try {
       if (!tracks.current) await tracks.useBuiltIn();

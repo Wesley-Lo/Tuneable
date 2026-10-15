@@ -1,6 +1,7 @@
 import type { App, Screen } from '../../app';
 import { GAIN_LIMIT, GAIN_STEP } from '../../audio/modes';
 import { h, icon, ICONS } from '../dom';
+import { wordmark } from '../wordmark';
 import { GlassSlider } from '../slider';
 
 export function createStepScreen(app: App, index: number): Screen {
@@ -39,6 +40,7 @@ export function createStepScreen(app: App, index: number): Screen {
   const el = h(
     'section',
     { class: 'screen step', 'aria-label': `Step ${index + 1} of ${total}: ${step.name}` },
+    wordmark(),
     h('header', { class: 'step-top' }, h('span', { class: 'spacer' }), dots, playBtn),
     h(
       'div',

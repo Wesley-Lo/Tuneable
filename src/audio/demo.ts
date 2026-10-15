@@ -1,6 +1,6 @@
 /**
  * Procedural demo track, rendered once in the browser with an OfflineAudioContext.
- * It is used when /public/audio/sample.mp3 does not exist, so the app always has
+ * It is used when none of the songs in src/audio/library.ts exist, so the app always has
  * something to tune against. It deliberately covers the whole spectrum: sub bass kick,
  * bass line, pads and plucks in the mids, snare in the treble, hats and bells up high.
  */
